@@ -22,42 +22,34 @@ fn App() -> impl IntoView {
     let output = view! {
         <table>
             <tbody>
-                {
-                    move || {
-                        let old = old_text.get();
-                        let new = new_text.get();
-                        // Computing
-                        let diff = dissimilar::diff(&old, &new);
-                        diff
-                            .into_iter()
-                            .map(|chunk| {
-                                let (sign, color, text) = match chunk {
-                                    dissimilar::Chunk::Equal(s) => ("=", "gray", s),
-                                    dissimilar::Chunk::Delete(s) => ("-", "red", s),
-                                    dissimilar::Chunk::Insert(s) => ("+", "green", s),
-                                };
-                                let marker = match sign {
-                                    "=" => " border-top:medium dashed black; width: 100%",
-                                    _ => "",
-                                };
-                                view! {
-                                    <tr>
-                                        <td style=format!(
-                                                "color:{color}",
-                                        )>
-                                            {format!("{sign}")}
-                                        </td>
-                                        <td style=format!(
-                                                "color:{color}; white-space:pre-wrap;{}",
-                                                marker
-                                        )>
-                                            {format!("{text}")}
-                                        </td>
-                                    </tr>
-                                }
-                            }).collect::<Vec<_>>()
-                    }
-                }
+                {move || {
+                    let old = old_text.get();
+                    let new = new_text.get();
+                    let diff = dissimilar::diff(&old, &new);
+                    diff.into_iter()
+                        .map(|chunk| {
+                            let (sign, color, text) = match chunk {
+                                dissimilar::Chunk::Equal(s) => ("=", "gray", s),
+                                dissimilar::Chunk::Delete(s) => ("-", "red", s),
+                                dissimilar::Chunk::Insert(s) => ("+", "green", s),
+                            };
+                            let marker = match sign {
+                                "=" => " border-top:medium dashed black; width: 100%",
+                                _ => "",
+                            };
+                            // Computing
+                            view! {
+                                <tr>
+                                    <td style=format!("color:{color}")>{format!("{sign}")}</td>
+                                    <td style=format!(
+                                        "color:{color}; white-space:pre-wrap;{}",
+                                        marker,
+                                    )>{format!("{text}")}</td>
+                                </tr>
+                            }
+                        })
+                        .collect::<Vec<_>>()
+                }}
             </tbody>
         </table>
         <hr />
@@ -111,7 +103,9 @@ fn App() -> impl IntoView {
                 " is a port of the Diff component of "
                 <a href="https://github.com/google/diff-match-patch">"Diff Match Patch"</a>
                 " to Rust. The diff implementation is based on "
-                <a href="https://neil.fraser.name/writing/diff/myers.pdf">"Myers' diff algorithm"</a>
+                <a href="https://neil.fraser.name/writing/diff/myers.pdf">
+                    "Myers' diff algorithm"
+                </a>
                 " but includes some "
                 <a href="https://neil.fraser.name/writing/diff/">"semantic cleanups"</a>
                 " to increase human readability by factoring out commonalities which are likely to be coincidental."
