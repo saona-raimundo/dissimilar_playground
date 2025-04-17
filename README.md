@@ -1,4 +1,4 @@
-# `similar` playground
+# `dissimilar` playground
 
 [Playground](https://saona-raimundo.github.io/dissimilar_playground/) for diffing text using the [similar](https://crates.io/crates/dissimilar/) crate.
 
